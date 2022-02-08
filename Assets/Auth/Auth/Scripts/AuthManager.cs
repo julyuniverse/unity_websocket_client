@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class LoginReturnValues
+{
+    public int success;
+    public int error_code;
+    public int userNumber;
+}
+
+public class AuthManager : MonoBehaviour
 {
     [Header("LoginPanel")]
     public InputField IDInputField; // ID
@@ -18,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     public string LoginUrl;
     public string SignUpUrl;
+    public LoginReturnValues loginReturnValues;
 
     // Start is called before the first frame update
     void Start()
@@ -56,8 +65,13 @@ public class GameManager : MonoBehaviour
             // Show results as text
             Debug.Log(www.downloadHandler.text);
 
-            // Or retrieve results as binary data
-            byte[] results = www.downloadHandler.data;
+            loginReturnValues = JsonUtility.FromJson<LoginReturnValues>(www.downloadHandler.text);
+
+            // 로그인 성공 시
+            if (loginReturnValues.success == 1)
+            {
+                SceneManager.LoadScene("ProfileScene");
+            }
         }
     }
 
